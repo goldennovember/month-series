@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  postgresdb:
+    image: postgres:15-bullseye
+    ports:
+      - "5432:5432"
+    environment:
+      - DEBUG=true
+      - POSTGRES_DB=january
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      - postgresdb
+    volumes:
+      - ./january/migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "postgres://admin:password@host.docker.internal:5432/january?sslmode=disable", "up"]
+    restart: on-failure
