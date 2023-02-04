@@ -7,7 +7,7 @@ services:
       - "5432:5432"
     environment:
       - DEBUG=true
-      - POSTGRES_DB=january
+      - POSTGRES_DB=silverjanuary
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=admin
   migrate:
@@ -15,6 +15,6 @@ services:
     depends_on:
       - postgresdb
     volumes:
-      - ./january/migrations:/migrations
-    command: ["-path", "/migrations", "-database",  "postgres://admin:password@host.docker.internal:5432/january?sslmode=disable", "up"]
+      - ./silverjanuary/migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "postgres://admin:password@host.docker.internal:5432/silverjanuary?sslmode=disable", "up"]
     restart: on-failure
