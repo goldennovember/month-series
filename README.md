@@ -55,10 +55,5 @@ With 8 partitions (8 goroutines), `Go Arrow` has more 1.72x improvement (total 1
 My solution also consume 2.1x less memory usage than Pandas (but worse than friends' solutions)
 
 ## White February
-This project was inspired by:
-* **Big Data Systems** course from HPI
-* **Distributed Systems** course from MIT
-
-It includes Inverted Index, TF-IDF, MapReduce, B+ Tree, and simple Stream Processing in Go.
-
+This project was inspired by **Big Data Systems** course from HPI.
 
