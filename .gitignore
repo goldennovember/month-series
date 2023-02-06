@@ -1,4 +1,4 @@
 .idea
 *.csv
 *.json
-!whitefebruary/searchengine/resources/small_abstracts.json
+!whitefebruary/resources/small_abstracts.json

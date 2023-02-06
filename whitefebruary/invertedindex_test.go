@@ -1,4 +1,4 @@
-package searchengine
+package whitefebruary
 
 import (
 	"fmt"
@@ -172,8 +172,54 @@ func Test_bigSearch(t *testing.T) {
 			{"https://en.wikipedia.org/wiki/Idaho_Potato_Commission",
 				"Idaho Potato Commission", 0.94229},
 			{"https://en.wikipedia.org/wiki/One_potato,_two_potato",
-				"One potato, two potato", 0.87731},
+				"One potato, two potato", 0.90864},
 		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+	t.Run("bigSearchForScrewdriver", func(t *testing.T) {
+		got := bigFileInvertedIndex.getSearchResult([]string{"screwdriver"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/Cam_out", "Cam out", 0.44899},
+			{"https://en.wikipedia.org/wiki/Staple_knocker", "Staple knocker", 0.29746},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+	t.Run("bigSearchForPolitics", func(t *testing.T) {
+		got := bigFileInvertedIndex.getSearchResult([]string{"politics"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/John_Murray_(colonial_administrator)",
+				"John Murray (colonial administrator)", 1.31803},
+			{"https://en.wikipedia.org/wiki/Office_Politics", "Office Politics",
+				1.31803},
+			{"https://en.wikipedia.org/wiki/Politics_of_Washington",
+				"Politics of Washington", 1.09835},
+			{"https://en.wikipedia.org/wiki/Politics_(1940s_magazine)",
+				"Politics (1940s magazine)", 0.77531},
+			{"https://en.wikipedia.org/wiki/Faith_and_Politics_Institute",
+				"Faith and Politics Institute", 0.73223},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+	t.Run("bigSearchForBananaCheesecake", func(t *testing.T) {
+		got := bigFileInvertedIndex.getSearchResult([]string{"Banana", "Cheesecake"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/Banana_Ridge", "Banana Ridge", 1.75258},
+			{"https://en.wikipedia.org/wiki/Masak_Hijau_banana", "Masak Hijau banana",
+				0.87629},
+			{"https://en.wikipedia.org/wiki/Musa_thomsonii", "Musa thomsonii", 0.87629},
+			{"https://en.wikipedia.org/wiki/Banana_Xanthomonas_wilt",
+				"Banana Xanthomonas wilt", 0.79663},
+			{"https://en.wikipedia.org/wiki/Cane_knife", "Cane knife", 0.79663},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+	t.Run("bigSearchForNonExistingTerm", func(t *testing.T) {
+		got := bigFileInvertedIndex.getSearchResult([]string{"pterodactyl"})
+		want := []SearchResult{}
 		ast.ElementsMatch(got, want, "")
 	})
 

@@ -5,8 +5,8 @@ Each month is a seperated project.
 > The name of 13 months are inspired by the webtoon series Tower of God.
 
 ## Structure
-1. [Silver January - Efficient writing of dataframes to Postgres with Go](#silver-january)
-2. [White February - Inverted Index and TF-IDF in Go](#white-february)
+1. [Silver January - Cargo: Efficient writing of dataframes to Postgres with Go](#silver-january) - part of **Interoperability in Data Processing Pipelines** course - HPI
+2. [White February - Search Engine: Inverted Index and TF-IDF in Go](#white-february) - inspired by **Big Data Systems** course - HPI
 
 
 ## Silver January
@@ -58,7 +58,7 @@ This project was inspired by **Big Data Systems** course from HPI.
 
 ### Inverted Index
 
-Indexes is  a data structure to find data item quickly.
+**Indexes** is  a data structure to find data item quickly.
 * Key -> Data
 * Often unique key
 
@@ -69,17 +69,17 @@ Typical examples:
 
 ![](whitefebruary/images/index.png)
 
-In a search engine:
+In a **search engine**:
 * Find document that contains word(s)
 * Data -> Key
-* -> Inverted Index
+* -> **Inverted Index**
 
 Consider a text document collection as a relation
 * Each word in the text collection is a boolean attribute
 * An attribute is true if the documents contains the word anywhere
 * Document(hadCat,hasDog,hasHouse,...)
 
-Inverted Index:
+**Inverted Index**:
 * Build a secondary index on every attribute (word)
 * But: Only true values are indexed
 * Build index pointing from word to secondary index for that word
@@ -101,22 +101,22 @@ Extension:
   * Operating on pointers sets
 
 ### Building an Inverted Index
-Input: Collection of documents
+**Input**: Collection of documents
 
-1. Tokenization
+1. **Tokenization**
    * Extract all words from each document
    * Remember the source document for each word
    * Embarassingly parallel
-2. Inversion
+2. **Inversion**
    * Merge word lists and collect pointers to documents per unique words
    * Need data exchange
 
 ### TF-IDF
-In information retrieval, TF-IDF, short for term frequency–inverse document frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
+In information retrieval, **TF-IDF**, short for term frequency–inverse document frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus.
 
-* Term Frequency (TF)
+* **Term Frequency** (TF)
   * How often does a word occur in a document?
   * TF = Number of occurrences of a word in a document / Total number of words in the document
-* Inverse Document Frequency (IDF)
+* **Inverse Document Frequency** (IDF)
   * IDF = log(Total number of documents / Number of documents with term t in it)
-* TF-IDF = TF * IDF
+* **TF-IDF** = TF * IDF
