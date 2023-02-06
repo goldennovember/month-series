@@ -1,6 +1,7 @@
 package searchengine
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -15,6 +16,9 @@ func Test_smallGetPageUrlsForTerm(t *testing.T) {
 
 	t.Run("smallGetSingleTermOrganisms", func(t *testing.T) {
 		got := smallFileInvertedIndex.getPageUrlsForTerm([]string{"organisms"})
+
+		fmt.Print(smallFileInvertedIndex.HashMap["organisms"].DocumentList)
+
 		want := []string{"https://en.wikipedia.org/wiki/Anatomy", "https://en.wikipedia.org/wiki/Aquaculture",
 			"https://en.wikipedia.org/wiki/Adaptive_radiation", "https://en.wikipedia.org/wiki/Abiotic_stress",
 			"https://en.wikipedia.org/wiki/Apoptosis", "https://en.wikipedia.org/wiki/Asexual_reproduction",
@@ -108,4 +112,69 @@ func Test_bigGetPageUrlsForTerm(t *testing.T) {
 			"https://en.wikipedia.org/wiki/Vukhuclepis"}
 		ast.ElementsMatchf(got, want, "")
 	})
+}
+
+func Test_smallSearch(t *testing.T) {
+	ast := assert.New(t)
+	smallFileInvertedIndex := InvertedIndex{Filename: SmallFile, HashMap: map[string]*Data{}}
+	smallFileInvertedIndex.buildIndex()
+
+	t.Run("smallSearchForApple", func(t *testing.T) {
+		got := smallFileInvertedIndex.getSearchResult([]string{"apple"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/Apple_II_series", "Apple II series", 0.76752},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+	t.Run("smallSearchForPolitics", func(t *testing.T) {
+		got := smallFileInvertedIndex.getSearchResult([]string{"Politics", "president"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/Brazilian_Armed_Forces", "Brazilian Armed Forces",
+				1.60943},
+			{"https://en.wikipedia.org/wiki/Politics_of_Armenia", "Politics of Armenia", 0.27330},
+			{"https://en.wikipedia.org/wiki/Politics_of_Botswana", "Politics of Botswana", 0.23552},
+			{"https://en.wikipedia.org/wiki/Politics_of_Burundi", "Politics of Burundi", 0.2299},
+			{"https://en.wikipedia.org/wiki/Politics_of_Bulgaria", "Politics of Bulgaria", 0.20546},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+	t.Run("smallSearchForWaterLandAir", func(t *testing.T) {
+		got := smallFileInvertedIndex.getSearchResult([]string{"water", "land", "air"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/Air_show", "Air show", 0.72973},
+			{"https://en.wikipedia.org/wiki/Bay_(disambiguation)", "Bay (disambiguation)",
+				0.7092499999999999},
+			{"https://en.wikipedia.org/wiki/Arable_land", "Arable land", 0.58881},
+			{"https://en.wikipedia.org/wiki/Brackish_water", "Brackish water", 0.46977},
+			{"https://en.wikipedia.org/wiki/Transport_in_Belgium", "Transport in Belgium",
+				0.41166},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
+}
+
+func Test_bigSearch(t *testing.T) {
+	ast := assert.New(t)
+	bigFileInvertedIndex := InvertedIndex{Filename: BigFile, HashMap: map[string]*Data{}}
+	bigFileInvertedIndex.buildIndex()
+
+	t.Run("bigSearchForWatermelonPotato", func(t *testing.T) {
+		got := bigFileInvertedIndex.getSearchResult([]string{"watermelon", "potato"})
+		want := []SearchResult{
+			{"https://en.wikipedia.org/wiki/Melody_potato", "Melody potato", 1.41344},
+			{"https://en.wikipedia.org/wiki/Idaho_Potato_Museum", "Idaho Potato Museum",
+				1.06008},
+			{"https://en.wikipedia.org/wiki/Russian_blue_potato", "Russian blue potato",
+				0.99772},
+			{"https://en.wikipedia.org/wiki/Idaho_Potato_Commission",
+				"Idaho Potato Commission", 0.94229},
+			{"https://en.wikipedia.org/wiki/One_potato,_two_potato",
+				"One potato, two potato", 0.87731},
+		}
+		ast.ElementsMatch(got, want, "")
+	})
+
 }

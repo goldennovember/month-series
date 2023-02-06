@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 )
@@ -24,8 +25,9 @@ type Data struct {
 }
 
 type InvertedIndex struct {
-	Filename string
-	HashMap  map[string]*Data
+	Filename     string
+	HashMap      map[string]*Data
+	numAbstracts int
 }
 
 type SearchResult struct {
@@ -35,7 +37,6 @@ type SearchResult struct {
 }
 
 var numPartitions = 8
-var numAbstracts = 0
 
 func (invertedIndex *InvertedIndex) buildIndex() {
 
@@ -59,7 +60,7 @@ func (invertedIndex *InvertedIndex) buildIndex() {
 
 	for scanner.Scan() {
 		data = append(data, scanner.Text())
-		numAbstracts++
+		invertedIndex.numAbstracts++
 	}
 
 	// Create WaitGroup to wait for all goroutines to finish
@@ -96,7 +97,7 @@ func (invertedIndex *InvertedIndex) buildIndex() {
 						}
 					} else {
 						invertedIndex.HashMap[word].Frequency++
-						if !containsDocument(invertedIndex.HashMap[word].DocumentList, abstract) {
+						if !containsDocument(invertedIndex.HashMap[word].DocumentList, &abstract) {
 							invertedIndex.HashMap[word].DocumentList = append(invertedIndex.HashMap[word].DocumentList, &abstract)
 						}
 					}
@@ -143,11 +144,9 @@ func (invertedIndex *InvertedIndex) getSearchResult(terms []string) []SearchResu
 				// Count words
 				normalized := normalizeTerm(document.Abstract)
 				words := strings.Fields(normalized)
-				wordCount := 0
 				termCount := 0
-				for _, word := range words {
-					wordCount++
-					if word == term {
+				for _, s := range words {
+					if s == word {
 						termCount++
 					}
 				}
@@ -159,7 +158,9 @@ func (invertedIndex *InvertedIndex) getSearchResult(terms []string) []SearchResu
 						score:     0,
 					}
 				}
-				urlHashMap[document.URL].score += (float64(termCount) / float64(wordCount)) * math.Log(float64(numAbstracts)/float64(len(invertedIndex.HashMap[word].DocumentList)))
+				tf := float64(termCount) / float64(len(words))
+				idf := math.Log(float64(invertedIndex.numAbstracts) / float64(len(invertedIndex.HashMap[word].DocumentList)))
+				urlHashMap[document.URL].score += math.Floor(tf*idf*100000) / 100000
 			}
 		}
 	}
@@ -169,12 +170,26 @@ func (invertedIndex *InvertedIndex) getSearchResult(terms []string) []SearchResu
 	for _, result := range urlHashMap {
 		searchResults = append(searchResults, *result)
 	}
-	return searchResults
+
+	sort.Slice(searchResults, func(i, j int) bool {
+		return searchResults[i].score >= searchResults[j].score
+	})
+
+	res := []SearchResult{}
+
+	for i := 0; i < len(searchResults); i++ {
+		if i == 5 {
+			break
+		}
+		res = append(res, searchResults[i])
+	}
+
+	return res
 }
 
-func containsDocument(documentList []*Abstracts, document Abstracts) bool {
+func containsDocument(documentList []*Abstracts, document *Abstracts) bool {
 	for _, doc := range documentList {
-		if doc == &document {
+		if doc == document {
 			return true
 		}
 	}
@@ -186,5 +201,5 @@ func normalizeTerm(term string) string {
 }
 
 func (s *SearchResult) String() string {
-	return fmt.Sprintf("SearchResult{PageUrl='%s',pageTiTle='%s',Score='%f'", s.pageTitle, s.pageUrl, s.score)
+	return fmt.Sprintf("SearchResult{PageUrl='%s',pageTiTle='%s',Score='%v'", s.pageTitle, s.pageUrl, s.score)
 }
