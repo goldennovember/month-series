@@ -1,12 +1,10 @@
 # Thirteen month series 
 
-Each month is a seperated project.
-
-> The name of 13 months are inspired by the webtoon series Tower of God.
+Each month is a seperated project/course inspired by HPI seminar/courses.
 
 ## Structure
-1. [Silver January - Cargo: Efficient writing of dataframes to Postgres with Go](#silver-january) - part of **Interoperability in Data Processing Pipelines** course - HPI
-2. [White February - Search Engine: Inverted Index and TF-IDF in Go](#white-february) - inspired by **Big Data Systems** course - HPI
+1. [Silver January - Cargo: Efficient writing of dataframes to Postgres with Go](#silver-january) - **Interoperability in Data Processing Pipelines - HPI**
+2. [White February - Search Engine: Inverted Index and TF-IDF in Go](#white-february) - **Big Data Systems - HPI**
 
 
 ## Silver January
