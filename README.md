@@ -27,10 +27,7 @@ to the Arrow data to Go using `Ctypes` shared library and `The Arrow C data inte
 
 We also use `COPY` command and fastest Go Postgres Driver `pgx`.
 
-![](silverjanuary/images/parallel.png)
-
 For the data partitioning, each `goroutine` will construct, hold the same amount of data, open multiple connection and write data to the database in parallel.
-
 
 ### Evaluation
 
